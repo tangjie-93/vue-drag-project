@@ -1,37 +1,27 @@
 <template>
-  <div id="app">
-    <dragComponent />
-  </div>
+	<div id="app">
+		<Index />
+	</div>
 </template>
 
 <script>
+import Index from './views/index';
 export default {
-  name: 'App',
-  components: {
-    dragComponent: () => import('./components/index.vue')
-  },
-  data () {
-    return {
-      name: 'james',
-      age: 27,
-      obj: {
-        name: 'james',
-        age: 27
-      }
-    }
-  }
-}
+	name: 'App',
+	components: {
+		Index,
+	},
+};
 </script>
-
 <style>
-body{
-  margin:0;
+body {
+	margin: 0;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	color: #2c3e50;
 }
 </style>

@@ -95,7 +95,7 @@ export function compact (layout, verticalCompact) {
  */
 export function compactItem (compareWith, l, verticalCompact) {
     if (verticalCompact) {
-    // Move the element up as far as it can go without colliding.
+        // Move the element up as far as it can go without colliding.
         while (l.y > 0 && !getFirstCollision(compareWith, l)) {
             l.y--
         }
@@ -338,7 +338,7 @@ export function moveElementAwayFromCollision (layout, collidesWith,
     // We only do this on the main collision as this can get funky in cascades and cause
     // unwanted swapping behavior.
     if (isUserAction) {
-    // Make a mock item so we don't modify the item here, only modify in moveElement.
+        // Make a mock item so we don't modify the item here, only modify in moveElement.
         const fakeItem = {
             x: itemToMove.x,
             y: itemToMove.y,
