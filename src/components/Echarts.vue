@@ -29,15 +29,14 @@ export default {
 	},
 	methods: {
 		initChart() {
-			setTimeout(() => {
-				console.log(this.optionData);
+			this.$nextTick(() => {
 				if (this.optionData) {
 					this.dom = echarts.init(this.$refs.dom, 'tdTheme');
 					this.dom.setOption(this.optionData);
 					this.index > -1 && this.$store.commit('addChartInstance', { index: this.index, chart: this.dom, option: this.optionData });
 					// this.dom.showLoading({ text: '数据正在加载中' });
 				}
-			}, 10);
+			});
 		},
 	},
 };

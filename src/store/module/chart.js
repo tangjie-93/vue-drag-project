@@ -22,7 +22,6 @@ export default {
       const visibleChartInstanceArr = state.visibleChartInstanceArr;
       const isExist = visibleChartInstanceArr.includes(index);
       if (!isExist) visibleChartInstanceArr.push(index);
-      console.log(visibleChartInstanceArr)
     },
     clearInvisibleChartInstance (state, index) {
       const visibleChartInstanceArr = state.visibleChartInstanceArr
@@ -32,19 +31,33 @@ export default {
     clearAllVisibleChartInstance (state) {
       state.visibleChartInstanceArr = []
     },
-  },
-  actions: {
     resizeChart ({ commit }, index) {
       setTimeout(() => {
         commit('resizeSingleChart', index)
       }, 300)
     },
     resizeAllCharts ({ state, commit }) {
-      console.log(state.visibleChartInstanceArr);
+      state.isresize = true;
       Object.values(state.visibleChartInstanceArr).forEach(index => {
         setTimeout(() => {
           commit('resizeSingleChart', index)
         }, 300)
+      })
+    }
+  },
+  actions: {
+    resizeChart ({ commit }, index) {
+      setTimeout(() => {
+        commit('resizeSingleChart', index)
+      }, 10)
+    },
+    resizeAllCharts ({ state, commit }) {
+      console.log("resize")
+      state.isresize = true;
+      Object.values(state.visibleChartInstanceArr).forEach(index => {
+        setTimeout(() => {
+          commit('resizeSingleChart', index)
+        }, 10)
       })
     }
   }

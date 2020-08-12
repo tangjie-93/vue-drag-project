@@ -175,7 +175,7 @@ export function setColumnsAndRows (colNum) {
       return { perItemWidth: 3, itemCountPerRow: 1 }
   }
 }
-export function createMetricData () {
+export function createOptionData () {
   const dateData = []
   for (let i = 6; i <= 24; i += 2) {
     dateData.push(`${i}:00:00`)
@@ -184,7 +184,7 @@ export function createMetricData () {
   for (let i = 0; i < dateData.length; i++) {
     const value = Math.round(Math.random() * 10);
     metricData.push({
-      value, 
+      value,
       data: [{ 'test': value }, { '测试': value + 2 }]
     })
   }
@@ -193,4 +193,17 @@ export function createMetricData () {
     map[item] = metricData[index]
   })
   return map;
+}
+export function debounce (fn, wait = 300, immediate = true) {
+  let timer = null;
+  return () => {
+    timer && clearTimeout(timer)
+    if (immediate) {
+      const call = !timer
+      timer = setTimeout(() => {
+        timer = null
+      }, wait);
+      call && fn.call(this, ...arguments)
+    }
+  }
 }

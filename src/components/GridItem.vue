@@ -14,27 +14,6 @@ let interact = require('interactjs');
 export default {
 	name: 'GridItem',
 	props: {
-		/*cols: {
-             type: Number,
-             required: true
-             },*/
-		/*containerWidth: {
-             type: Number,
-             required: true
-
-             },
-             rowHeight: {
-             type: Number,
-             required: true
-             },
-             margin: {
-             type: Array,
-             required: true
-             },
-             maxRows: {
-             type: Number,
-             required: true
-             },*/
 		isDraggable: {
 			type: Boolean,
 			required: false,
@@ -45,11 +24,6 @@ export default {
 			required: false,
 			default: null,
 		},
-		/*useCssTransforms: {
-             type: Boolean,
-             required: true
-             },
-             */
 		static: {
 			type: Boolean,
 			required: false,
@@ -397,6 +371,7 @@ export default {
 
 			const newSize = { width: 0, height: 0 };
 			let pos;
+			console.log(event.type)
 			switch (event.type) {
 				case 'resizestart': {
 					this.previousW = this.innerW;

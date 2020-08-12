@@ -1,8 +1,9 @@
 <template>
-	<div id="container">
+	<div id="app">
 		<div id="content">
-			<grid-layout :layout.sync="layout" :col-num="parseInt(colNum)" :row-height="rowHeight" :is-draggable="draggable" :is-resizable="resizable" :is-mirrored="mirrored" :prevent-collision="preventCollision" :vertical-compact="true" :use-css-transforms="true" :responsive="responsive" @layout-updated="layoutUpdatedEvent" @layout-mounted="layoutMountedEvent">
-				<grid-item v-for="item in layout" :key="item.i" :isDraggable="item.draggable" :index="item.i" :static="item.static" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" @resized="resized" class="grid-item">
+
+			<grid-layout :layout.sync="layout" :col-num="parseInt(colNum)" :row-height="rowHeight" :is-draggable="draggable" :is-resizable="resizable" :is-mirrored="mirrored" :prevent-collision="preventCollision" :vertical-compact="true" :use-css-transforms="true" :responsive="responsive" @layout-mounted="layoutMountedEvent">
+				<grid-item v-for="item in layout" :key="item.i" :isDraggable="item.draggable" :static="item.static" :index="item.i" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" @resized="resized" @container-resized="containerResized" @moved="moved" class="grid-item">
 					<div class="header">
 						<div class="title" @mouseover="item.draggable=true" @mouseout="item.draggable=false">测试</div>
 						<div class="operate-btn">
@@ -12,7 +13,7 @@
 					<CardRender class="echart-card" :index="item.i" :displayType="item.displayType" />
 				</grid-item>
 			</grid-layout>
-			<hr />
+
 		</div>
 	</div>
 </template>
@@ -20,18 +21,16 @@
 <script>
 import GridItem from '../components/GridItem.vue';
 import GridLayout from '../components/GridLayout.vue';
+import CardRender from '../components/CardRender';
 import { getDocumentDir, setDocumentDir } from '../helpers/DOM';
-import { setColumnsAndRows, createMetricData } from '@/libs/helper';
-import { BarChart, LineChart, PieChart, CustomTable } from '@/libs/chartHelper';
-
-import { on, off } from '@/libs/helper';
-import evenBus from '@/libs/evenBus';
+import { setColumnsAndRows } from '@/libs/helper';
+import { on, off, debounce } from '@/libs/helper';
 export default {
-	name: 'index',
+	name: 'app',
 	components: {
 		GridLayout,
 		GridItem,
-		CardRender: () => import('../components/CardRender'),
+		CardRender,
 	},
 	data() {
 		return {
@@ -41,24 +40,22 @@ export default {
 			mirrored: false,
 			responsive: true,
 			preventCollision: false,
-			rowHeight: 20,
+			rowHeight: 30,
 			colNum: 12,
 			index: 0,
 		};
 	},
 	mounted: function() {
-		console.log('mounted');
-		on(window, 'resize', this.resizeCharts);
+		on(window, 'resize', debounce(this.resizeCharts, 500));
 		this.$once('hook:beforeDestroy', () => {
-			off(window, 'resize', this.resizeCharts);
+			off(window, 'resize', debounce(this.resizeCharts, 500));
 		});
 		setTimeout(() => {
 			this.startObserver();
-		}, 5000);
+		}, 500);
 	},
 	methods: {
 		resizeCharts() {
-			console.log('resize');
 			this.$store.dispatch('resizeAllCharts');
 		},
 		removeItem: function(item) {
@@ -72,17 +69,28 @@ export default {
 			this.index++;
 			this.layout.push(item);
 		},
-		resized(i) {
-			console.log(i);
+		move: function(i, newX, newY) {
+			// console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
+		},
+		resize: function(i, newH, newW, newHPx, newWPx) {},
+		moved: function(i, newX, newY) {
+			// console.log("### MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
+		},
+		resized: function(i, newH, newW, newHPx, newWPx) {
 			i > -1 && this.$store.dispatch('resizeChart', i);
 		},
-		layoutMountedEvent: function(colNum) {
-			this.colNum = colNum;
-			this.createLayoutData(this.colNum);
+		containerResized: function(i, newH, newW, newHPx, newWPx) {
+			// console.log("### CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
 		},
-		layoutUpdatedEvent() {
-			console.log('layoutUpdatedEvent');
-			this.resizeCharts();
+
+		layoutMountedEvent: function(colNum) {
+			this.createLayoutData(colNum);
+		},
+		layoutReadyEvent: function(newLayout) {
+			// console.log("Ready layout: ", newLayout)
+		},
+		layoutUpdatedEvent: function(newLayout) {
+			// console.log("Updated layout: ", newLayout)
 		},
 		// 构建布局数据
 		createLayoutData(colNum = 12) {
@@ -116,7 +124,6 @@ export default {
 			}
 			this.layout = layoutData;
 		},
-
 		startObserver() {
 			// 避免监听多次
 			this.io && this.io.disconnect();
@@ -124,6 +131,7 @@ export default {
 				entries.forEach(item => {
 					const index = item.target.getAttribute('index');
 					if (item.isIntersecting) {
+						console.log();
 						// console.log(index);
 						this.$store.commit('initChart', index);
 						this.$eventBus.$emit('initData', index);
@@ -144,55 +152,18 @@ export default {
 	},
 };
 </script>
+
 <style lang="scss">
-.operate-btn {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	z-index: 1000;
-	// display: none;
-	.ivu-icon {
-		margin: 0 5px;
-		&:hover {
-			cursor: pointer;
-		}
-	}
-	.remove {
-		font-size: 16px;
-	}
-}
-.vue-grid-item:hover .operate-btn {
-	display: inline-block;
-}
-.title {
-	height: 40px;
-	font-size: 18px;
-	line-height: 40px;
-	text-align: center;
-	font-weight: bold;
-	font-family: 'sans-serif';
-}
-.metric-table {
-	max-height: calc(100% - 40px);
-	min-height: 150px;
-	width: 100%;
-	overflow: auto;
-}
-#content {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	padding: 30px;
-	box-sizing: border-box;
-	overflow: auto;
-}
-.vue-grid-layout {
-	height: 100% !important;
-	width: 100%;
-	overflow: auto;
-}
-.title {
+.header {
 	height: 30px;
-	cursor: move;
+	line-height: 30px;
+	display: flex;
+	text-align: center;
+	.title {
+		flex: 1;
+	}
+	.operate-btn {
+		flex-basis: 50px;
+	}
 }
 </style>

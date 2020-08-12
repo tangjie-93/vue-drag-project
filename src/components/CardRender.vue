@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { createMetricData } from '@/libs/helper';
+import { createOptionData } from '@/libs/helper';
 import { BarChart, LineChart, PieChart, CustomTable } from '@/libs/chartHelper';
 export default {
 	name: 'CradRender',
@@ -31,8 +31,9 @@ export default {
 		};
 	},
 	mounted() {
-		console.log('render');
+		console.log('cardrender');
 		this.$eventBus.$on('initData', this.initData);
+		// this.initData();
 	},
 	beforeDestroy() {
 		this.$eventBus.$off('initData', this.initData);
@@ -42,11 +43,11 @@ export default {
 	},
 	methods: {
 		initData(index) {
-			console.log(index, this.index);
 			if (this.index === index) {
-				const metricData = createMetricData();
-				this.data = this.createChartDataByChartType(this.displayType, metricData);
-				console.log(this.data);
+				console.log(index);
+				//构建数据
+				const option = createOptionData();
+				this.data = this.createChartDataByChartType(this.displayType, option);
 			}
 		},
 		// 创建图表数据
