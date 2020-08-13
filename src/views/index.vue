@@ -59,39 +59,26 @@ export default {
 			this.$store.dispatch('resizeAllCharts');
 		},
 		removeItem: function(item) {
-			//console.log("### REMOVE " + item.i);
 			this.layout.splice(this.layout.indexOf(item), 1);
 		},
 		addItem: function() {
-			// let self = this;
-			//console.log("### LENGTH: " + this.layout.length);
 			let item = { x: 0, y: 0, w: 2, h: 2, i: this.index + '', whatever: 'bbb' };
 			this.index++;
 			this.layout.push(item);
 		},
-		move: function(i, newX, newY) {
-			// console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
-		},
+		move: function(i, newX, newY) {},
 		resize: function(i, newH, newW, newHPx, newWPx) {},
-		moved: function(i, newX, newY) {
-			// console.log("### MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
-		},
+		moved: function(i, newX, newY) {},
 		resized: function(i, newH, newW, newHPx, newWPx) {
 			i > -1 && this.$store.dispatch('resizeChart', i);
 		},
-		containerResized: function(i, newH, newW, newHPx, newWPx) {
-			// console.log("### CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-		},
+		containerResized: function(i, newH, newW, newHPx, newWPx) {},
 
 		layoutMountedEvent: function(colNum) {
 			this.createLayoutData(colNum);
 		},
-		layoutReadyEvent: function(newLayout) {
-			// console.log("Ready layout: ", newLayout)
-		},
-		layoutUpdatedEvent: function(newLayout) {
-			// console.log("Updated layout: ", newLayout)
-		},
+		layoutReadyEvent: function(newLayout) {},
+		layoutUpdatedEvent: function(newLayout) {},
 		// 构建布局数据
 		createLayoutData(colNum = 12) {
 			const { perItemWidth, itemCountPerRow } = setColumnsAndRows(colNum);
@@ -131,13 +118,10 @@ export default {
 				entries.forEach(item => {
 					const index = item.target.getAttribute('index');
 					if (item.isIntersecting) {
-						console.log();
-						// console.log(index);
 						this.$store.commit('initChart', index);
 						this.$eventBus.$emit('initData', index);
 						// this.io.unobserve(item.target); // 停止观察当前元素 避免不可见时候再次调用callback函数
 					} else {
-						// console.log(index)
 						// 清除不可见的
 						this.$store.commit('clearInvisibleChartInstance', index);
 					}
