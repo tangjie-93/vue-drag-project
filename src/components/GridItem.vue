@@ -371,7 +371,6 @@ export default {
 
 			const newSize = { width: 0, height: 0 };
 			let pos;
-			console.log(event.type)
 			switch (event.type) {
 				case 'resizestart': {
 					this.previousW = this.innerW;

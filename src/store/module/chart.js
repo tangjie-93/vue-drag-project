@@ -14,7 +14,6 @@ export default {
       delete state.chartInstanceObj[index]
     },
     resizeSingleChart (state, index) {
-      console.log(state.chartInstanceObj[index]);
       const chartInstanceObj = state.chartInstanceObj[index]
       chartInstanceObj && chartInstanceObj.chart.resize()
     },
@@ -52,7 +51,6 @@ export default {
       }, 10)
     },
     resizeAllCharts ({ state, commit }) {
-      console.log("resize")
       state.isresize = true;
       Object.values(state.visibleChartInstanceArr).forEach(index => {
         setTimeout(() => {

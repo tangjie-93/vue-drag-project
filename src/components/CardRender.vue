@@ -31,7 +31,6 @@ export default {
 		};
 	},
 	mounted() {
-		console.log('cardrender');
 		this.$eventBus.$on('initData', this.initData);
 		// this.initData();
 	},
@@ -44,7 +43,6 @@ export default {
 	methods: {
 		initData(index) {
 			if (this.index === index) {
-				console.log(index);
 				//构建数据
 				const option = createOptionData();
 				this.data = this.createChartDataByChartType(this.displayType, option);
