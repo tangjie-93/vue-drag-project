@@ -1,29 +1,8 @@
-# vue-drag-demo
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+  &#8195;  &#8195;这是一个实现图表拖拽的简单项目，同时能够做到真正的条件渲染。在做该项目的过程中主要要注意以下几点。
+  + 在子组件全部渲染好后开始进行监测。
+    + 在项目中我是用 `setTimeout`里面对元素开始监测的。这样有时候可能不准。
+    + 也可以在子组件中统计子组件渲染的个数，当子组件渲染完毕后，才开始监听。
+  + 利用 `IntersectionObserver`来对页面中的元素进行监测。
+  + 用一个数组来保存出现在视图中的图表。
+  + 利用`isIntersecting`属性，被监听的元素的 `isIntersecting`属性为`true`时， 即该元素出现在视图中，将该元素的索引添加到数组中，并开始构建图表所需要的数据。当该元素的`isIntersecting`为`false`时，将该元素从数组中删除。
+  + 当窗口变化时和向后台请求数据时，永远只会渲染视图中的元素，能够减少不必要的渲染，减少性能开销。
